@@ -320,33 +320,139 @@
             </ul>
         </div>
 
-        <!-- Static Threats Section -->
+        <!-- Static Threats Section with MITRE ATT&CK -->
         <div class="section">
-            <h2>Amenazas Específicas del Sector (Análisis OSINT)</h2>
+            <h2>Amenazas Específicas del Sector (Análisis OSINT + MITRE ATT&CK)</h2>
             <ul class="threat-list">
                 <li class="threat-item critical">
                     <h4>Ransomware Dirigido a Aerolíneas</h4>
-                    <p>Campañas de ransomware explotando vulnerabilidades en sistemas VPN de reservas.</p>
+                    <p>Múltiples aerolíneas afectadas por ataques de ransomware dirigidos que explotan vulnerabilidades en VPN de sistemas de reservas.</p>
                     <div class="threat-meta">
                         <span class="badge critical">CRÍTICO</span>
-                        <span class="badge">T1190 - Exploit Public-Facing Application</span>
+                        <span class="badge mitre">T1190 - Exploit Public-Facing Application</span>
+                        <span class="badge mitre">T1486 - Data Encrypted for Impact</span>
                     </div>
                 </li>
                 <li class="threat-item high">
-                    <h4>Vulnerabilidades en ADS-B</h4>
-                    <p>Posibilidad de manipulación de señales ADS-B con impacto en gestión de tráfico aéreo.</p>
+                    <h4>Vulnerabilidades en ADS-B (Automatic Dependent Surveillance-Broadcast)</h4>
+                    <p>Investigaciones demuestran viabilidad de manipulación de señales ADS-B, con impacto potencial en sistemas de gestión de tráfico aéreo.</p>
                     <div class="threat-meta">
                         <span class="badge high">ALTO</span>
-                        <span class="badge">T1557 - Man-in-the-Middle</span>
+                        <span class="badge mitre">T1557 - Man-in-the-Middle</span>
                     </div>
                 </li>
                 <li class="threat-item high">
                     <h4>Interceptación de Comunicaciones ACARS</h4>
-                    <p>Mensajes ACARS sin cifrar exponen planes de vuelo y datos de mantenimiento.</p>
+                    <p>Mensajes ACARS sin cifrar permanecen vulnerables a interceptación, exponiendo planes de vuelo y datos de mantenimiento.</p>
                     <div class="threat-meta">
                         <span class="badge high">ALTO</span>
-                        <span class="badge">T1040 - Network Sniffing</span>
+                        <span class="badge mitre">T1040 - Network Sniffing</span>
                     </div>
+                </li>
+                <li class="threat-item medium">
+                    <h4>Compromiso de Proveedores de la Cadena de Suministro</h4>
+                    <p>Ataques a la cadena de suministro dirigidos a fabricantes de software aeronáutico, incluyendo sistemas de planificación de vuelo y mantenimiento.</p>
+                    <div class="threat-meta">
+                        <span class="badge medium">MEDIO</span>
+                        <span class="badge mitre">T1195 - Supply Chain Compromise</span>
+                    </div>
+                </li>
+                <li class="threat-item medium">
+                    <h4>Campañas de Phishing contra Personal Aeronáutico</h4>
+                    <p>Ataques de spear-phishing sofisticados dirigidos a pilotos y personal de operaciones con objetivos de robo de credenciales.</p>
+                    <div class="threat-meta">
+                        <span class="badge medium">MEDIO</span>
+                        <span class="badge mitre">T1566 - Phishing</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- MITRE ATT&CK Timeline -->
+        <div class="section">
+            <h2>Timeline de Incidentes Recientes</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="date">Septiembre 2025</div>
+                    <h4>Ataque DDoS a Aerolínea Europea</h4>
+                    <p>Ataque de denegación de servicio distribuido interrumpió sistemas de check-in online y reservas durante 6 horas.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">Agosto 2025</div>
+                    <h4>Credential Stuffing en Programas de Fidelización</h4>
+                    <p>Ataques automatizados contra cuentas de viajero frecuente usando credenciales previamente filtradas.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">Julio 2025</div>
+                    <h4>Evil Twin Attack en Wi-Fi de Aeropuerto</h4>
+                    <p>Puntos de acceso maliciosos descubiertos en aeropuerto internacional dirigidos a dispositivos de pasajeros.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="date">Junio 2025</div>
+                    <h4>Vulnerabilidad Crítica en Sistema de Gestión de Vuelo</h4>
+                    <p>Vulnerabilidad crítica revelada en software FMS ampliamente utilizado, parches emitidos por el fabricante.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- OSINT Sources -->
+        <div class="section">
+            <h2>Fuentes OSINT Monitorizadas</h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Bases de Datos</h3>
+                    <ul style="list-style: none; color: #e0e0e0; font-size: 0.9rem; margin-top: 1rem;">
+                        <li>✓ NVD (NIST)</li>
+                        <li>✓ CVE Database</li>
+                        <li>✓ CISA Advisories</li>
+                    </ul>
+                </div>
+                <div class="stat-card">
+                    <h3>Frameworks</h3>
+                    <ul style="list-style: none; color: #e0e0e0; font-size: 0.9rem; margin-top: 1rem;">
+                        <li>✓ MITRE ATT&CK</li>
+                        <li>✓ CAPEC</li>
+                        <li>✓ CWE</li>
+                    </ul>
+                </div>
+                <div class="stat-card">
+                    <h3>Herramientas</h3>
+                    <ul style="list-style: none; color: #e0e0e0; font-size: 0.9rem; margin-top: 1rem;">
+                        <li>✓ Shodan</li>
+                        <li>✓ VirusTotal</li>
+                        <li>✓ URLScan.io</li>
+                    </ul>
+                </div>
+                <div class="stat-card">
+                    <h3>Organizaciones</h3>
+                    <ul style="list-style: none; color: #e0e0e0; font-size: 0.9rem; margin-top: 1rem;">
+                        <li>✓ EASA</li>
+                        <li>✓ FAA</li>
+                        <li>✓ ECSO</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="section">
+            <h2>Recomendaciones Clave para el Sector Aviación</h2>
+            <ul class="threat-list">
+                <li class="threat-item low">
+                    <h4>1. Implementar Arquitectura Zero Trust</h4>
+                    <p>Adoptar principios de confianza cero para todos los sistemas operacionales de aviación, especialmente aquellos que manejan datos críticos de vuelo.</p>
+                </li>
+                <li class="threat-item low">
+                    <h4>2. Mejorar Seguridad de ACARS</h4>
+                    <p>Transición a comunicaciones ACARS cifradas (FANS 1/A+) para prevenir interceptación de mensajes.</p>
+                </li>
+                <li class="threat-item low">
+                    <h4>3. Auditorías de Seguridad en Cadena de Suministro</h4>
+                    <p>Evaluaciones regulares de seguridad de proveedores de software y servicios aeronáuticos de terceros.</p>
+                </li>
+                <li class="threat-item low">
+                    <h4>4. Formación en Concienciación de Seguridad</h4>
+                    <p>Capacitación especializada para personal aeronáutico sobre phishing, ingeniería social y seguridad operacional.</p>
                 </li>
             </ul>
         </div>
