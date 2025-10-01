@@ -38,6 +38,29 @@
             font-size: 1.1rem;
         }
 
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        .live-dot {
+            width: 10px;
+            height: 10px;
+            background: #2ecc71;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -82,6 +105,11 @@
         .stat-card .label {
             color: #a0a0a0;
             font-size: 0.9rem;
+        }
+
+        .loading {
+            color: #ffa502;
+            font-style: italic;
         }
 
         .critical { color: #ff4757; }
@@ -154,114 +182,58 @@
             font-weight: 600;
         }
 
-        .badge.critical { background: rgba(255, 71, 87, 0.2); color: #ff4757; }
-        .badge.high { background: rgba(255, 165, 2, 0.2); color: #ffa502; }
-        .badge.medium { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
-        .badge.low { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
-        .badge.mitre { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
-
-        .timeline {
-            position: relative;
-            padding-left: 2rem;
+        .badge.critical {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
         }
 
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: linear-gradient(180deg, #00d4ff 0%, rgba(0, 212, 255, 0.2) 100%);
+        .badge.high {
+            background: rgba(255, 165, 2, 0.2);
+            color: #ffa502;
         }
 
-        .timeline-item {
-            position: relative;
-            margin-bottom: 2rem;
-            padding-left: 1.5rem;
+        .badge.medium {
+            background: rgba(241, 196, 15, 0.2);
+            color: #f1c40f;
         }
 
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: -2rem;
-            top: 0;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #00d4ff;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        .badge.low {
+            background: rgba(46, 204, 113, 0.2);
+            color: #2ecc71;
         }
 
-        .timeline-item h4 {
-            color: #fff;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-item .date {
-            color: #00d4ff;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .timeline-item p {
-            color: #b0b0b0;
-        }
-
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 2rem;
-        }
-
-        .source-list {
-            list-style: none;
-        }
-
-        .source-item {
-            background: rgba(20, 25, 45, 0.6);
-            padding: 1rem;
-            margin-bottom: 0.8rem;
-            border-radius: 6px;
-            border-left: 3px solid #00d4ff;
-        }
-
-        .source-item a {
+        .cve-link {
             color: #00d4ff;
             text-decoration: none;
             font-weight: 600;
         }
 
-        .source-item a:hover {
+        .cve-link:hover {
             text-decoration: underline;
         }
 
-        .source-item p {
-            color: #a0a0a0;
-            font-size: 0.9rem;
-            margin-top: 0.3rem;
-        }
-
-        .methodology {
-            background: rgba(0, 212, 255, 0.1);
-            padding: 1.5rem;
+        .refresh-btn {
+            background: rgba(0, 212, 255, 0.2);
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+            padding: 0.8rem 1.5rem;
             border-radius: 8px;
-            border: 1px solid rgba(0, 212, 255, 0.3);
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
             margin-bottom: 1.5rem;
         }
 
-        .methodology h3 {
-            color: #00d4ff;
-            margin-bottom: 1rem;
+        .refresh-btn:hover {
+            background: rgba(0, 212, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.4);
         }
 
-        .methodology ol {
-            color: #e0e0e0;
-            padding-left: 1.5rem;
-        }
-
-        .methodology li {
-            margin-bottom: 0.5rem;
+        .refresh-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         footer {
@@ -284,11 +256,6 @@
             .header h1 {
                 font-size: 1.8rem;
             }
-            
-            .grid-2 {
-                grid-template-columns: 1fr;
-            }
-            
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -297,186 +264,230 @@
 </head>
 <body>
     <div class="header">
-        <h1>Aviation Threat Intelligence Dashboard</h1>
-        <p>OSINT-based Cybersecurity Analysis for the Aviation Sector</p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Last Updated: October 2025</p>
+        <h1>✈️ Aviation Threat Intelligence Dashboard</h1>
+        <p>OSINT-based Cybersecurity Analysis with Real-time Data</p>
+        <div class="live-indicator">
+            <div class="live-dot"></div>
+            <span id="lastUpdate">Cargando datos...</span>
+        </div>
     </div>
 
     <div class="container">
         <!-- KPI Stats -->
         <div class="stats-grid">
             <div class="stat-card">
-                <h3>Total Threats Monitored</h3>
-                <div class="number critical">47</div>
-                <div class="label">Active threats identified</div>
+                <h3>CVEs en Aviación</h3>
+                <div class="number info" id="totalCVEs">
+                    <span class="loading">Cargando...</span>
+                </div>
+                <div class="label">Vulnerabilidades identificadas</div>
             </div>
             <div class="stat-card">
-                <h3>Critical Vulnerabilities</h3>
-                <div class="number high">12</div>
-                <div class="label">Requiring immediate attention</div>
+                <h3>CVEs Críticos</h3>
+                <div class="number critical" id="criticalCVEs">
+                    <span class="loading">Cargando...</span>
+                </div>
+                <div class="label">Severidad crítica</div>
             </div>
             <div class="stat-card">
-                <h3>OSINT Sources</h3>
-                <div class="number info">23</div>
-                <div class="label">Monitored intelligence sources</div>
+                <h3>CVEs Alto Riesgo</h3>
+                <div class="number high" id="highCVEs">
+                    <span class="loading">Cargando...</span>
+                </div>
+                <div class="label">Severidad alta</div>
             </div>
             <div class="stat-card">
-                <h3>Incidents This Month</h3>
-                <div class="number medium">8</div>
-                <div class="label">Security incidents detected</div>
+                <h3>Última Actualización</h3>
+                <div class="number medium" id="recentCount">
+                    <span class="loading">Cargando...</span>
+                </div>
+                <div class="label">CVEs últimos 30 días</div>
             </div>
         </div>
 
-        <!-- Methodology Section -->
+        <!-- Real-time CVEs Section -->
         <div class="section">
-            <h2>OSINT Methodology</h2>
-            <div class="methodology">
-                <h3>Intelligence Gathering Process</h3>
-                <ol>
-                    <li><strong>Source Identification:</strong> CVE databases, aviation security bulletins, threat intelligence platforms</li>
-                    <li><strong>Data Collection:</strong> Automated monitoring of public sources, security forums, and vendor advisories</li>
-                    <li><strong>Analysis & Correlation:</strong> Mapping threats to MITRE ATT&CK framework and aviation-specific systems</li>
-                    <li><strong>Risk Assessment:</strong> Prioritization based on potential impact on airline operations</li>
-                    <li><strong>Documentation:</strong> Structured reporting with actionable recommendations</li>
-                </ol>
-            </div>
-        </div>
-
-        <!-- Recent Threats -->
-        <div class="section">
-            <h2>Recent Threats Identified</h2>
-            <ul class="threat-list">
-                <li class="threat-item critical">
-                    <h4>Ransomware Campaign Targeting Airlines</h4>
-                    <p>Multiple airlines affected by targeted ransomware attacks exploiting VPN vulnerabilities in reservation systems.</p>
-                    <div class="threat-meta">
-                        <span class="badge critical">CRITICAL</span>
-                        <span class="badge mitre">T1190 - Exploit Public-Facing Application</span>
-                        <span class="badge mitre">T1486 - Data Encrypted for Impact</span>
-                    </div>
-                </li>
-                <li class="threat-item high">
-                    <h4>ADS-B Spoofing Vulnerabilities</h4>
-                    <p>Research demonstrates feasibility of ADS-B signal manipulation, potential impact on air traffic management systems.</p>
-                    <div class="threat-meta">
-                        <span class="badge high">HIGH</span>
-                        <span class="badge mitre">T1557 - Man-in-the-Middle</span>
-                    </div>
-                </li>
-                <li class="threat-item high">
-                    <h4>ACARS Communication Interception</h4>
-                    <p>Unencrypted ACARS messages remain vulnerable to interception, exposing flight plans and maintenance data.</p>
-                    <div class="threat-meta">
-                        <span class="badge high">HIGH</span>
-                        <span class="badge mitre">T1040 - Network Sniffing</span>
-                    </div>
-                </li>
+            <h2>🚨 Vulnerabilidades Recientes (Datos en Tiempo Real)</h2>
+            <button class="refresh-btn" onclick="loadCVEData()" id="refreshBtn">
+                🔄 Actualizar Datos
+            </button>
+            <ul class="threat-list" id="cveList">
                 <li class="threat-item medium">
-                    <h4>Third-Party Supplier Compromises</h4>
-                    <p>Supply chain attacks targeting aviation software vendors, including flight planning and maintenance systems.</p>
-                    <div class="threat-meta">
-                        <span class="badge medium">MEDIUM</span>
-                        <span class="badge mitre">T1195 - Supply Chain Compromise</span>
-                    </div>
-                </li>
-                <li class="threat-item medium">
-                    <h4>Phishing Campaigns Against Airline Staff</h4>
-                    <p>Sophisticated spear-phishing targeting pilots and operations personnel with credential harvesting objectives.</p>
-                    <div class="threat-meta">
-                        <span class="badge medium">MEDIUM</span>
-                        <span class="badge mitre">T1566 - Phishing</span>
-                    </div>
+                    <p style="text-align: center; color: #ffa502;">
+                        ⏳ Consultando base de datos NVD (NIST)...
+                    </p>
                 </li>
             </ul>
         </div>
 
-        <!-- Timeline and Sources Grid -->
-        <div class="grid-2">
-            <div class="section">
-                <h2>Recent Incidents Timeline</h2>
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <div class="date">September 2025</div>
-                        <h4>Major European Airline DDoS Attack</h4>
-                        <p>Distributed denial of service attack disrupted online check-in and booking systems for 6 hours.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="date">August 2025</div>
-                        <h4>Credential Stuffing on Loyalty Programs</h4>
-                        <p>Automated attacks on frequent flyer accounts using previously breached credentials.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="date">July 2025</div>
-                        <h4>Airport Wi-Fi Evil Twin Attack</h4>
-                        <p>Rogue access points discovered at international airport targeting passenger devices.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="date">June 2025</div>
-                        <h4>Flight Management System Vulnerability</h4>
-                        <p>Critical vulnerability disclosed in widely-used FMS software, patches issued by vendor.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section">
-                <h2>OSINT Sources</h2>
-                <ul class="source-list">
-                    <li class="source-item">
-                        <a href="https://nvd.nist.gov/" target="_blank">NIST National Vulnerability Database</a>
-                        <p>CVE tracking for aviation-related systems</p>
-                    </li>
-                    <li class="source-item">
-                        <a href="https://www.cisa.gov/aviation" target="_blank">CISA Aviation Alerts</a>
-                        <p>Government cybersecurity advisories</p>
-                    </li>
-                    <li class="source-item">
-                        <a href="https://attack.mitre.org/" target="_blank">MITRE ATT&CK Framework</a>
-                        <p>Threat intelligence and tactics mapping</p>
-                    </li>
-                    <li class="source-item">
-                        <a href="https://www.virustotal.com/" target="_blank">VirusTotal</a>
-                        <p>Malware analysis and threat detection</p>
-                    </li>
-                    <li class="source-item">
-                        <a href="https://www.shodan.io/" target="_blank">Shodan</a>
-                        <p>Internet-exposed systems discovery</p>
-                    </li>
-                    <li class="source-item">
-                        <a href="https://www.ecso.org/" target="_blank">European Cyber Security Organisation</a>
-                        <p>Aviation sector threat reports</p>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Recommendations -->
+        <!-- Static Threats Section -->
         <div class="section">
-            <h2>Key Recommendations for Aviation Sector</h2>
+            <h2>🎯 Amenazas Específicas del Sector (Análisis OSINT)</h2>
             <ul class="threat-list">
-                <li class="threat-item low">
-                    <h4>1. Implement Zero Trust Architecture</h4>
-                    <p>Adopt zero trust principles for all aviation operational systems, especially those handling critical flight data.</p>
+                <li class="threat-item critical">
+                    <h4>Ransomware Dirigido a Aerolíneas</h4>
+                    <p>Campañas de ransomware explotando vulnerabilidades en sistemas VPN de reservas.</p>
+                    <div class="threat-meta">
+                        <span class="badge critical">CRÍTICO</span>
+                        <span class="badge">T1190 - Exploit Public-Facing Application</span>
+                    </div>
                 </li>
-                <li class="threat-item low">
-                    <h4>2. Enhanced ACARS Security</h4>
-                    <p>Transition to encrypted ACARS communications (FANS 1/A+) to prevent message interception.</p>
+                <li class="threat-item high">
+                    <h4>Vulnerabilidades en ADS-B</h4>
+                    <p>Posibilidad de manipulación de señales ADS-B con impacto en gestión de tráfico aéreo.</p>
+                    <div class="threat-meta">
+                        <span class="badge high">ALTO</span>
+                        <span class="badge">T1557 - Man-in-the-Middle</span>
+                    </div>
                 </li>
-                <li class="threat-item low">
-                    <h4>3. Supply Chain Security Audits</h4>
-                    <p>Regular security assessments of third-party aviation software and service providers.</p>
-                </li>
-                <li class="threat-item low">
-                    <h4>4. Security Awareness Training</h4>
-                    <p>Specialized training for aviation personnel on phishing, social engineering, and operational security.</p>
+                <li class="threat-item high">
+                    <h4>Interceptación de Comunicaciones ACARS</h4>
+                    <p>Mensajes ACARS sin cifrar exponen planes de vuelo y datos de mantenimiento.</p>
+                    <div class="threat-meta">
+                        <span class="badge high">ALTO</span>
+                        <span class="badge">T1040 - Network Sniffing</span>
+                    </div>
                 </li>
             </ul>
         </div>
     </div>
 
     <footer>
-        <p>Aviation Threat Intelligence Dashboard - OSINT Project</p>
+        <p>Aviation Threat Intelligence Dashboard - OSINT Project con Datos en Tiempo Real</p>
         <p>Created by <a href="https://github.com/3stefani" target="_blank">Estefanía Ramírez Martínez</a></p>
-        <p style="margin-top: 0.5rem; font-size: 0.9rem;">This is a demonstration project for cybersecurity analysis purposes</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">
+            Datos obtenidos de: <a href="https://nvd.nist.gov/" target="_blank">NVD (NIST)</a>
+        </p>
     </footer>
+
+    <script>
+        // Función para obtener CVEs reales de la API de NVD
+        async function loadCVEData() {
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.textContent = '⏳ Actualizando...';
+
+            try {
+                // Búsqueda de CVEs relacionados con aviación
+                const keywords = ['aircraft', 'aviation', 'airline', 'flight'];
+                const searchTerm = keywords[Math.floor(Math.random() * keywords.length)];
+                
+                const response = await fetch(
+                    `https://services.nvd.nist.gov/rest/json/cves/2.0?keywordSearch=${searchTerm}&resultsPerPage=10`
+                );
+
+                if (!response.ok) throw new Error('Error en la API');
+
+                const data = await response.json();
+                displayCVEs(data.vulnerabilities || []);
+                updateStats(data.vulnerabilities || []);
+                
+                document.getElementById('lastUpdate').textContent = 
+                    `Actualizado: ${new Date().toLocaleString('es-ES')}`;
+
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('cveList').innerHTML = `
+                    <li class="threat-item high">
+                        <h4>⚠️ Error al cargar datos</h4>
+                        <p>No se pudieron obtener datos de la API NVD. Mostrando datos de ejemplo.</p>
+                    </li>
+                `;
+                loadSampleData();
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '🔄 Actualizar Datos';
+            }
+        }
+
+        function displayCVEs(vulnerabilities) {
+            const cveList = document.getElementById('cveList');
+            
+            if (!vulnerabilities || vulnerabilities.length === 0) {
+                cveList.innerHTML = `
+                    <li class="threat-item medium">
+                        <p>No se encontraron CVEs recientes. Intenta de nuevo en unos minutos.</p>
+                    </li>
+                `;
+                return;
+            }
+
+            cveList.innerHTML = vulnerabilities.map(item => {
+                const cve = item.cve;
+                const cveId = cve.id;
+                const description = cve.descriptions?.find(d => d.lang === 'en')?.value || 'Sin descripción';
+                const published = new Date(cve.published).toLocaleDateString('es-ES');
+                
+                // Obtener severidad
+                const metrics = cve.metrics?.cvssMetricV31?.[0] || cve.metrics?.cvssMetricV2?.[0];
+                const severity = metrics?.cvssData?.baseSeverity || 
+                               metrics?.baseSeverity || 'MEDIUM';
+                
+                const score = metrics?.cvssData?.baseScore || 
+                            metrics?.baseScore || 'N/A';
+
+                const severityClass = severity.toLowerCase();
+                const severityText = severity === 'CRITICAL' ? 'CRÍTICO' :
+                                   severity === 'HIGH' ? 'ALTO' :
+                                   severity === 'MEDIUM' ? 'MEDIO' : 'BAJO';
+
+                return `
+                    <li class="threat-item ${severityClass}">
+                        <h4>
+                            <a href="https://nvd.nist.gov/vuln/detail/${cveId}" 
+                               target="_blank" 
+                               class="cve-link">${cveId}</a>
+                        </h4>
+                        <p>${description.substring(0, 200)}${description.length > 200 ? '...' : ''}</p>
+                        <div class="threat-meta">
+                            <span class="badge ${severityClass}">${severityText} (${score})</span>
+                            <span class="badge">Publicado: ${published}</span>
+                        </div>
+                    </li>
+                `;
+            }).join('');
+        }
+
+        function updateStats(vulnerabilities) {
+            const total = vulnerabilities.length;
+            let critical = 0, high = 0, recent = 0;
+
+            const thirtyDaysAgo = new Date();
+            thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+            vulnerabilities.forEach(item => {
+                const metrics = item.cve.metrics?.cvssMetricV31?.[0] || 
+                              item.cve.metrics?.cvssMetricV2?.[0];
+                const severity = metrics?.cvssData?.baseSeverity || 
+                               metrics?.baseSeverity || 'MEDIUM';
+                
+                if (severity === 'CRITICAL') critical++;
+                if (severity === 'HIGH') high++;
+
+                const published = new Date(item.cve.published);
+                if (published >= thirtyDaysAgo) recent++;
+            });
+
+            document.getElementById('totalCVEs').textContent = total;
+            document.getElementById('criticalCVEs').textContent = critical;
+            document.getElementById('highCVEs').textContent = high;
+            document.getElementById('recentCount').textContent = recent;
+        }
+
+        function loadSampleData() {
+            document.getElementById('totalCVEs').textContent = '10';
+            document.getElementById('criticalCVEs').textContent = '2';
+            document.getElementById('highCVEs').textContent = '5';
+            document.getElementById('recentCount').textContent = '3';
+        }
+
+        // Cargar datos al iniciar
+        window.addEventListener('load', () => {
+            setTimeout(loadCVEData, 1000);
+        });
+
+        // Auto-refresh cada 5 minutos
+        setInterval(loadCVEData, 300000);
+    </script>
 </body>
 </html>
