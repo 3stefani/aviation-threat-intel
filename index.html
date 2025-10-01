@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviation Threat Intelligence Dashboard | OSINT Project</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1d3e 100%);
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: rgba(15, 20, 45, 0.9);
+            padding: 2rem;
+            text-align: center;
+            border-bottom: 3px solid #00d4ff;
+            box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        .header h1 {
+            color: #00d4ff;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: rgba(30, 35, 60, 0.8);
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 25px rgba(0, 212, 255, 0.4);
+            border-color: #00d4ff;
+        }
+
+        .stat-card h3 {
+            color: #00d4ff;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin: 0.5rem 0;
+        }
+
+        .stat-card .label {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .critical { color: #ff4757; }
+        .high { color: #ffa502; }
+        .medium { color: #f1c40f; }
+        .info { color: #00d4ff; }
+
+        .section {
+            background: rgba(30, 35, 60, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        .section h2 {
+            color: #00d4ff;
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+            border-bottom: 2px solid rgba(0, 212, 255, 0.3);
+            padding-bottom: 0.5rem;
+        }
+
+        .threat-list {
+            list-style: none;
+        }
+
+        .threat-item {
+            background: rgba(20, 25, 45, 0.6);
+            padding: 1.2rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid;
+            transition: all 0.3s ease;
+        }
+
+        .threat-item:hover {
+            background: rgba(30, 35, 55, 0.8);
+            transform: translateX(5px);
+        }
+
+        .threat-item.critical { border-left-color: #ff4757; }
+        .threat-item.high { border-left-color: #ffa502; }
+        .threat-item.medium { border-left-color: #f1c40f; }
+        .threat-item.low { border-left-color: #2ecc71; }
+
+        .threat-item h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .threat-item p {
+            color: #b0b0b0;
+            margin-bottom: 0.5rem;
+        }
+
+        .threat-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge.critical { background: rgba(255, 71, 87, 0.2); color: #ff4757; }
+        .badge.high { background: rgba(255, 165, 2, 0.2); color: #ffa502; }
+        .badge.medium { background: rgba(241, 196, 15, 0.2); color: #f1c40f; }
+        .badge.low { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .badge.mitre { background: rgba(0, 212, 255, 0.2); color: #00d4ff; }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, #00d4ff 0%, rgba(0, 212, 255, 0.2) 100%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+        }
+
+        .timeline-item h4 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item .date {
+            color: #00d4ff;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .timeline-item p {
+            color: #b0b0b0;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2rem;
+        }
+
+        .source-list {
+            list-style: none;
+        }
+
+        .source-item {
+            background: rgba(20, 25, 45, 0.6);
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            border-radius: 6px;
+            border-left: 3px solid #00d4ff;
+        }
+
+        .source-item a {
+            color: #00d4ff;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .source-item a:hover {
+            text-decoration: underline;
+        }
+
+        .source-item p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+            margin-top: 0.3rem;
+        }
+
+        .methodology {
+            background: rgba(0, 212, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            margin-bottom: 1.5rem;
+        }
+
+        .methodology h3 {
+            color: #00d4ff;
+            margin-bottom: 1rem;
+        }
+
+        .methodology ol {
+            color: #e0e0e0;
+            padding-left: 1.5rem;
+        }
+
+        .methodology li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #a0a0a0;
+            border-top: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        footer a {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>✈️ Aviation Threat Intelligence Dashboard</h1>
+        <p>OSINT-based Cybersecurity Analysis for the Aviation Sector</p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">Last Updated: October 2025</p>
+    </div>
+
+    <div class="container">
+        <!-- KPI Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Threats Monitored</h3>
+                <div class="number critical">47</div>
+                <div class="label">Active threats identified</div>
+            </div>
+            <div class="stat-card">
+                <h3>Critical Vulnerabilities</h3>
+                <div class="number high">12</div>
+                <div class="label">Requiring immediate attention</div>
+            </div>
+            <div class="stat-card">
+                <h3>OSINT Sources</h3>
+                <div class="number info">23</div>
+                <div class="label">Monitored intelligence sources</div>
+            </div>
+            <div class="stat-card">
+                <h3>Incidents This Month</h3>
+                <div class="number medium">8</div>
+                <div class="label">Security incidents detected</div>
+            </div>
+        </div>
+
+        <!-- Methodology Section -->
+        <div class="section">
+            <h2>🔍 OSINT Methodology</h2>
+            <div class="methodology">
+                <h3>Intelligence Gathering Process</h3>
+                <ol>
+                    <li><strong>Source Identification:</strong> CVE databases, aviation security bulletins, threat intelligence platforms</li>
+                    <li><strong>Data Collection:</strong> Automated monitoring of public sources, security forums, and vendor advisories</li>
+                    <li><strong>Analysis & Correlation:</strong> Mapping threats to MITRE ATT&CK framework and aviation-specific systems</li>
+                    <li><strong>Risk Assessment:</strong> Prioritization based on potential impact on airline operations</li>
+                    <li><strong>Documentation:</strong> Structured reporting with actionable recommendations</li>
+                </ol>
+            </div>
+        </div>
+
+        <!-- Recent Threats -->
+        <div class="section">
+            <h2>🚨 Recent Threats Identified</h2>
+            <ul class="threat-list">
+                <li class="threat-item critical">
+                    <h4>Ransomware Campaign Targeting Airlines</h4>
+                    <p>Multiple airlines affected by targeted ransomware attacks exploiting VPN vulnerabilities in reservation systems.</p>
+                    <div class="threat-meta">
+                        <span class="badge critical">CRITICAL</span>
+                        <span class="badge mitre">T1190 - Exploit Public-Facing Application</span>
+                        <span class="badge mitre">T1486 - Data Encrypted for Impact</span>
+                    </div>
+                </li>
+                <li class="threat-item high">
+                    <h4>ADS-B Spoofing Vulnerabilities</h4>
+                    <p>Research demonstrates feasibility of ADS-B signal manipulation, potential impact on air traffic management systems.</p>
+                    <div class="threat-meta">
+                        <span class="badge high">HIGH</span>
+                        <span class="badge mitre">T1557 - Man-in-the-Middle</span>
+                    </div>
+                </li>
+                <li class="threat-item high">
+                    <h4>ACARS Communication Interception</h4>
+                    <p>Unencrypted ACARS messages remain vulnerable to interception, exposing flight plans and maintenance data.</p>
+                    <div class="threat-meta">
+                        <span class="badge high">HIGH</span>
+                        <span class="badge mitre">T1040 - Network Sniffing</span>
+                    </div>
+                </li>
+                <li class="threat-item medium">
+                    <h4>Third-Party Supplier Compromises</h4>
+                    <p>Supply chain attacks targeting aviation software vendors, including flight planning and maintenance systems.</p>
+                    <div class="threat-meta">
+                        <span class="badge medium">MEDIUM</span>
+                        <span class="badge mitre">T1195 - Supply Chain Compromise</span>
+                    </div>
+                </li>
+                <li class="threat-item medium">
+                    <h4>Phishing Campaigns Against Airline Staff</h4>
+                    <p>Sophisticated spear-phishing targeting pilots and operations personnel with credential harvesting objectives.</p>
+                    <div class="threat-meta">
+                        <span class="badge medium">MEDIUM</span>
+                        <span class="badge mitre">T1566 - Phishing</span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Timeline and Sources Grid -->
+        <div class="grid-2">
+            <div class="section">
+                <h2>📅 Recent Incidents Timeline</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="date">September 2025</div>
+                        <h4>Major European Airline DDoS Attack</h4>
+                        <p>Distributed denial of service attack disrupted online check-in and booking systems for 6 hours.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="date">August 2025</div>
+                        <h4>Credential Stuffing on Loyalty Programs</h4>
+                        <p>Automated attacks on frequent flyer accounts using previously breached credentials.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="date">July 2025</div>
+                        <h4>Airport Wi-Fi Evil Twin Attack</h4>
+                        <p>Rogue access points discovered at international airport targeting passenger devices.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="date">June 2025</div>
+                        <h4>Flight Management System Vulnerability</h4>
+                        <p>Critical vulnerability disclosed in widely-used FMS software, patches issued by vendor.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>📚 OSINT Sources</h2>
+                <ul class="source-list">
+                    <li class="source-item">
+                        <a href="https://nvd.nist.gov/" target="_blank">NIST National Vulnerability Database</a>
+                        <p>CVE tracking for aviation-related systems</p>
+                    </li>
+                    <li class="source-item">
+                        <a href="https://www.cisa.gov/aviation" target="_blank">CISA Aviation Alerts</a>
+                        <p>Government cybersecurity advisories</p>
+                    </li>
+                    <li class="source-item">
+                        <a href="https://attack.mitre.org/" target="_blank">MITRE ATT&CK Framework</a>
+                        <p>Threat intelligence and tactics mapping</p>
+                    </li>
+                    <li class="source-item">
+                        <a href="https://www.virustotal.com/" target="_blank">VirusTotal</a>
+                        <p>Malware analysis and threat detection</p>
+                    </li>
+                    <li class="source-item">
+                        <a href="https://www.shodan.io/" target="_blank">Shodan</a>
+                        <p>Internet-exposed systems discovery</p>
+                    </li>
+                    <li class="source-item">
+                        <a href="https://www.ecso.org/" target="_blank">European Cyber Security Organisation</a>
+                        <p>Aviation sector threat reports</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="section">
+            <h2>💡 Key Recommendations for Aviation Sector</h2>
+            <ul class="threat-list">
+                <li class="threat-item low">
+                    <h4>1. Implement Zero Trust Architecture</h4>
+                    <p>Adopt zero trust principles for all aviation operational systems, especially those handling critical flight data.</p>
+                </li>
+                <li class="threat-item low">
+                    <h4>2. Enhanced ACARS Security</h4>
+                    <p>Transition to encrypted ACARS communications (FANS 1/A+) to prevent message interception.</p>
+                </li>
+                <li class="threat-item low">
+                    <h4>3. Supply Chain Security Audits</h4>
+                    <p>Regular security assessments of third-party aviation software and service providers.</p>
+                </li>
+                <li class="threat-item low">
+                    <h4>4. Security Awareness Training</h4>
+                    <p>Specialized training for aviation personnel on phishing, social engineering, and operational security.</p>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <footer>
+        <p>Aviation Threat Intelligence Dashboard - OSINT Project</p>
+        <p>Created by <a href="https://github.com/3stefani" target="_blank">Estefanía Velasco</a></p>
+        <p style="margin-top: 0.5rem; font-size: 0.9rem;">This is a demonstration project for cybersecurity analysis purposes</p>
+    </footer>
+</body>
+</html>
