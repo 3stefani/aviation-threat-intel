@@ -7,7 +7,7 @@ OSINT Threat Intelligence Dashboard for Aviation Sector - Cybersecurity Project
 
 **Live Demo:** [https://3stefani.github.io/aviation-threat-intel/](https://3stefani.github.io/aviation-threat-intel/)
 
-[Imagen 1](./img/OSINT%20aviation%20threat%20intel%201.jpg)
+![Imagen 1](./img/OSINT%20aviation%20threat%20intel%201.jpg)
 ---
 
 ## Project Overview
